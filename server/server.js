@@ -21,7 +21,7 @@ io.on('connection', (socket) => {
   socket.emit('newMessage', generateMessage('admin', 'Welcome to the chat room'));
   socket.broadcast.emit('newMessage', generateMessage('admin@example.com', 'Another user has joined the chat room'));
 
-  socket.on('createMessage', (message) => {
+  socket.on('createMessage', (message, callback) => {
     console.log('createMessage', message);
 
     // send to all sockets
@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
     //   text: message.text,
     //   createdAt: new Date().getTime()
     // });
+    callback('This is from the server');
   })
 
   socket.on('disconnect', () => {
