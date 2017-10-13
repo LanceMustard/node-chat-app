@@ -18,8 +18,8 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('new user connected');
 
-  socket.emit('newMessage', generateMessage('admin', 'Welcome to the chat room'));
-  socket.broadcast.emit('newMessage', generateMessage('admin', 'Another user has joined the chat room'));
+  socket.emit('newMessage', generateMessage('admin', 'Welcome to the chat app'));
+  socket.broadcast.emit('newMessage', generateMessage('admin', 'Another user has joined the chat app'));
 
   socket.on('createMessage', (message, callback) => {
     console.log('createMessage', message);
