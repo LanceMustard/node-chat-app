@@ -19,15 +19,13 @@ var users = new Users();
 app.use(express.static(publicPath));
 
 io.on('connection', (socket) => {
-  console.log('new user connected');
 
   socket.on('join', (params, callback) => {
-
-
     if (!isRealString(params.name) || !isRealString(params.room)) {
       return callback('Name and room name are required.');
     }
 
+    console.log(`${params.name} connected`);
     socket.join(params.room);
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
@@ -45,31 +43,37 @@ io.on('connection', (socket) => {
   });
 
   socket.on('createMessage', (message, callback) => {
-    console.log('createMessage', message);
+    var user = users.getUser(socket.id);
 
-    // send to all sockets
-    io.emit('newMessage', generateMessage(message.from, message.text));
+    if (user && isRealString(message.text)) {
+      // send to all sockets
+      io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
 
-    // sends to all sockets, except the socket that initialised the event
-    // socket.broadcast.emit('newMessage', {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // });
-    callback('This is from the server');
+      // sends to all sockets, except the socket that initialised the event
+      // socket.broadcast.emit('newMessage', {
+      //   from: message.from,
+      //   text: message.text,
+      //   createdAt: new Date().getTime()
+      // });
+    }
+    callback('');
   });
 
   socket.on('createLocationMessage', (coords) => {
-    io.emit('newLocationMessage', generateLocationMessage('admin', coords.latitude, coords.longitude));
+    var user = users.getUser(socket.id);
+    
+    if (user) {
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+    }
   });
 
   socket.on('disconnect', () => {
     var user = users.removeUser(socket.id);
     if (user) {
       io.to(user.room).emit('updateUserList', users.getUserList(user.room));
-      socket.broadcast.emit('newMessage', generateMessage('admin', `${user.name} has left.`));
+      socket.broadcast.to(user.room).emit('newMessage', generateMessage('admin', `${user.name} has left.`));
+      console.log(`${user.name} disconnected`);
     }    
-    console.log('User was disconnected');
   });
 });
 
