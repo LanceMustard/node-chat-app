@@ -19,12 +19,21 @@ function scrollToBotton () {
 socket.on('connect', function() {
   var params = jQuery.deparam(window.location.search);
 
-  socket.emit('join', params, function(err) {
+  socket.emit('join', params, function(err, user) {
     if (err) {
       alert(err);
       return window.location.href = '/';
     } else {
-      console.log('Validate connection.');
+      if (user) {
+        var template = jQuery('#profile-template').html();
+        var html = Mustache.render(template, {
+          name: user.name,
+          room: user.room
+        });
+        jQuery('#profile').append(html);
+      } else {
+        console.log('Unknown user profile');
+      }
     }
   });
 });

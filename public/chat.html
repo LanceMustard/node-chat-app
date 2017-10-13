@@ -9,8 +9,13 @@
   <body class="chat">
 
     <div class="chat__sidebar">
-      <h3>People</h3>
-      <div id="users"></div>
+      <div>
+        <h3>People</h3>
+        <div id="users"></div>
+      </div>
+      <div class="chat__sidebar_profile">
+        <div id="profile"></div>
+      </div>
     </div>
 
     <div class="chat__main">
@@ -18,14 +23,20 @@
     
       <div class="chat__footer">
         <form id="message-form">
-          <input name="message" type="text" placeholder="Message" autofocus autocomplete="off"/>
+          <input 
+            id="message"
+            name="message" 
+            type="text" 
+            placeholder="Message" 
+            autofocus 
+            autocomplete="off"/>
+            <i class="fa fa-smile-o" id="icon" aria-hidden="true"></i>
           <button>Send</button>
         </form>
         <button id="send-location">Send location</button>
       </div>
 
     </div>
-
   </body>
 
   <script id="message-template" type="text/template">
@@ -54,8 +65,15 @@
     </li>
   </script>
 
-  <script src="/socket.io/socket.io.js"></script>
+  <script id="profile-template" type="text/template">
+    <div class="profile">
+      <h4>User: {{name}}</h4>
+      <h4>Room: {{room}}</h4>
+    </div>
+  </script>
+
   <script src="./js/libs/jquery-3.2.1.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
   <script src="./js/libs/moment.js"></script>
   <script src="./js/libs/mustache.js"></script>
   <script src="./js/libs/deparam.js"></script>
