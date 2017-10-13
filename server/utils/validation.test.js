@@ -11,7 +11,7 @@ describe('isRealString', () => {
     expect(res).toBe(false);
   });
   it('should allow string wtih non-space characters', () => {
-    var res = isRealString('hello there');
+    var res = isRealString('hello there  ');
     expect(res).toBe(true);
   });
 });
